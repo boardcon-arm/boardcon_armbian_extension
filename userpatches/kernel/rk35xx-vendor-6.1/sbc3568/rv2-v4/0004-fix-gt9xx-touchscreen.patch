@@ -1,0 +1,53 @@
+diff --git a/drivers/input/touchscreen/gt9xx/gt9xx.c b/drivers/input/touchscreen/gt9xx/gt9xx.c
+index 71c0d8bbd..68ff3dfe1 100644
+--- a/drivers/input/touchscreen/gt9xx/gt9xx.c
++++ b/drivers/input/touchscreen/gt9xx/gt9xx.c
+@@ -2672,7 +2672,7 @@ static int goodix_ts_probe(struct i2c_client *client, const struct i2c_device_id
+ 	if (val == 89) {
+ 		m89or101 = TRUE;
+ 		gtp_change_x2y = TRUE;
+-		gtp_x_reverse = FALSE;
++		gtp_x_reverse = TRUE;
+ 		gtp_y_reverse = TRUE;
+ 	} else if (val == 9271) {
+ 		m89or101 = TRUE;
+@@ -2910,6 +2910,7 @@ static int goodix_ts_probe(struct i2c_client *client, const struct i2c_device_id
+     printk("   <%s>_%d  prob error !!!!!!!!!!!!!!!\n", __func__, __LINE__);    
+     GTP_GPIO_FREE(ts->rst_pin);
+     GTP_GPIO_FREE(ts->irq_pin);
++    return ret;
+ probe_init_error_requireio:
+     tp_unregister_fb(&ts->tp); 
+     kfree(ts);
+diff --git a/drivers/input/touchscreen/gt9xx/gt9xx.h b/drivers/input/touchscreen/gt9xx/gt9xx.h
+index 5f9ae184d..0c03860c9 100644
+--- a/drivers/input/touchscreen/gt9xx/gt9xx.h
++++ b/drivers/input/touchscreen/gt9xx/gt9xx.h
+@@ -53,7 +53,7 @@
+ #define GTP_X_REVERSE_ENABLE	1
+ #define GTP_Y_REVERSE_ENABLE	0
+ #endif
+-#define GTP_DRIVER_SEND_CFG   1
++#define GTP_DRIVER_SEND_CFG   0
+ #define GTP_HAVE_TOUCH_KEY    0
+ #define GTP_POWER_CTRL_SLEEP  0
+ 
+diff --git a/drivers/input/touchscreen/gt9xx/gt9xx_cfg.h b/drivers/input/touchscreen/gt9xx/gt9xx_cfg.h
+index 78f273c5e..ebf788a29 100644
+--- a/drivers/input/touchscreen/gt9xx/gt9xx_cfg.h
++++ b/drivers/input/touchscreen/gt9xx/gt9xx_cfg.h
+@@ -18,6 +18,7 @@
+ #ifndef _GOODIX_GT9XX_CFG_H_
+ #define _GOODIX_GT9XX_CFG_H_
+ 
++#if GTP_DRIVER_SEND_CFG
+ /* CFG for GT911 */
+ static u8 gtp_dat_gt11[] = {
+ 	/* <1200, 1920>*/
+@@ -76,5 +77,5 @@ static u8 gtp_dat_gt928[] = {
+ 	/* <1920, 1080> 11.6 eDP (Youyeetoo YY3588 eDP kit) */
+ 	#include "GT928_Config_20190318_111541.cfg"
+ };
+-
++#endif
+ #endif /* _GOODIX_GT9XX_CFG_H_ */
